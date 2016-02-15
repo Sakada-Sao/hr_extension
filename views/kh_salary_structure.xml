@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="hr_rule_basic_in_dollar" model="hr.salary.rule">
+            <field name="name">Basic Dollar</field>
+            <field name="code">BAS</field>
+            <field name="sequence" eval="200"/>
+            <field name="category_id" ref="hr_payroll.BASIC"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = contract.calculate_basic_dollar </field>
+        </record>
+
+        <record id="hr_rule_basic_in_riel" model="hr.salary.rule">
+            <field name="name">Basic Riel</field>
+            <field name="code">BAR</field>
+            <field name="sequence" eval="201"/>
+            <field name="category_id" ref="hr_payroll.BASIC"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = contract.calculate_basic_riel </field>
+        </record>
+
+        <record id="hr_rule_child_allowance" model="hr.salary.rule">
+            <field name="name">Child Allowance</field>
+            <field name="code">CA</field>
+            <field name="sequence" eval="202"/>
+            <field name="category_id" ref="hr_payroll.BASIC"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = contract.calculate_child_allowance </field>
+        </record>
+
+        <record id="hr_rule_salary_tax" model="hr.salary.rule">
+            <field name="name">Salary Tax</field>
+            <field name="code">ST</field>
+            <field name="sequence" eval="203"/>
+            <field name="category_id" ref="hr_payroll.BASIC"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = contract.calculate_salary_tax </field>
+        </record>
+
+        <record id="hr_rule_tax_in_riel" model="hr.salary.rule">
+            <field name="name">Tax in Riel</field>
+            <field name="code">TIR</field>
+            <field name="sequence" eval="204"/>
+            <field name="category_id" ref="hr_payroll.BASIC"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = contract.calculate_tax_salary_in_riel </field>
+        </record>
+
+        <record id="hr_rule_tax_in_dollar" model="hr.salary.rule">
+            <field name="name">Tax in Dollar</field>
+            <field name="code">TID</field>
+            <field name="sequence" eval="205"/>
+            <field name="category_id" ref="hr_payroll.BASIC"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = contract.calculate_tax_salary_in_dollar </field>
+        </record>
+
+        <record id="hr_rule_paid_amount" model="hr.salary.rule">
+            <field name="name">Paid Amount</field>
+            <field name="code">PAD</field>
+            <field name="sequence" eval="206"/>
+            <field name="category_id" ref="hr_payroll.BASIC"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = contract.paid_amount </field>
+        </record>
+
+        <record id="hr_salary_rule_overtime" model="hr.salary.rule">
+            <field name="amount_select">percentage</field>
+            <field eval="207" name="sequence"/>
+            <field eval="150" name="amount_percentage"/>
+            <field name="amount_percentage_base">worked_days.work_ot.number_of_hours * (contract.wage / 180)</field>
+            <field name="code">OT</field>
+            <field name="category_id" ref="hr_payroll.BASIC"/>
+            <field name="name">Overtime</field>
+        </record>
+
+        <record id="hr_salary_rule_unpaid" model="hr.salary.rule">
+            <field name="amount_select">percentage</field>
+            <field eval="208" name="sequence"/>
+            <field eval="-100" name="amount_percentage"/>
+            <field name="amount_percentage_base">worked_days.unpaid.number_of_hours*(contract.wage/180)</field>
+            <field name="code">UNP</field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="name">Unpaid Leave</field>
+        </record>
+
+        <record id="structure_003" model="hr.payroll.structure">
+            <field name="code">OSS</field>
+            <field name="name">Own Salary Structure</field>
+            <field eval="[(6, 0, [ref('hr_rule_basic_in_dollar'),
+            ref('hr_rule_basic_in_riel'),
+            ref('hr_rule_child_allowance'),
+            ref('hr_rule_salary_tax'),
+            ref('hr_rule_tax_in_riel'),
+            ref('hr_rule_tax_in_dollar'),
+            ref('hr_rule_paid_amount')
+            ])]" name="rule_ids"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="parent_id" ref=""/>
+        </record>
+
+    </data>
+</openerp>
