@@ -42,6 +42,7 @@ class hr_payslip_extend(models.Model):
         for attendance in attendances:
             worked_hours = worked_hours + attendance['worked_hours']
 
+        cr.execute("delete from hr_payslip_worked_days where code = 'actual_work'")
         worked_days.create(cr, uid, {
             'code': 'actual_work',
             'contract_id': contract_id,

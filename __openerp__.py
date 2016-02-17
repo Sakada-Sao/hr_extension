@@ -24,6 +24,7 @@
                 'hr',
                 'hr_contract',
                 'hr_payroll',
+                'hr_timesheet_sheet',
                 ],
 
     # always loaded

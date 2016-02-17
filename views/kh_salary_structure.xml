@@ -3,7 +3,7 @@
     <data>
 
         <record id="hr_rule_basic_in_dollar" model="hr.salary.rule">
-            <field name="name">Basic Dollar</field>
+            <field name="name">Basic Salary in Dollar</field>
             <field name="code">BAS</field>
             <field name="sequence" eval="200"/>
             <field name="category_id" ref="hr_payroll.BASIC"/>
@@ -13,7 +13,7 @@
         </record>
 
         <record id="hr_rule_basic_in_riel" model="hr.salary.rule">
-            <field name="name">Basic Riel</field>
+            <field name="name">Basic Salary in Riel</field>
             <field name="code">BAR</field>
             <field name="sequence" eval="201"/>
             <field name="category_id" ref="hr_payroll.BASIC"/>
@@ -92,16 +92,27 @@
             <field name="name">Unpaid Leave</field>
         </record>
 
+        <record id="hr_rule_actual_work" model="hr.salary.rule">
+            <field name="amount_select">percentage</field>
+            <field eval="209" name="sequence"/>
+            <field eval="100" name="amount_percentage"/>
+            <field name="amount_percentage_base">worked_days.actual_work.number_of_hours * (contract.wage / 180)</field>
+            <field name="code">AW</field>
+            <field name="category_id" ref="hr_payroll.BASIC"/>
+            <field name="name">Actual Work</field>
+        </record>
+
         <record id="structure_003" model="hr.payroll.structure">
-            <field name="code">OSS</field>
-            <field name="name">Own Salary Structure</field>
+            <field name="code">MSS</field>
+            <field name="name">My Salary Structure</field>
             <field eval="[(6, 0, [ref('hr_rule_basic_in_dollar'),
             ref('hr_rule_basic_in_riel'),
             ref('hr_rule_child_allowance'),
             ref('hr_rule_salary_tax'),
             ref('hr_rule_tax_in_riel'),
             ref('hr_rule_tax_in_dollar'),
-            ref('hr_rule_paid_amount')
+            ref('hr_rule_paid_amount'),
+            ref('hr_rule_actual_work')
             ])]" name="rule_ids"/>
             <field name="company_id" ref="base.main_company"/>
             <field name="parent_id" ref=""/>
