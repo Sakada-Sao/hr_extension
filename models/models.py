@@ -24,10 +24,12 @@ class hr_payslip_extend(models.Model):
         worked_days = self.pool.get('hr.payslip.worked_days')
         contract_id = ''
         payslip_id = ''
+        state = ""
 
         for payslip in self.browse(cr, uid, ids, context=context):
             contract_id = payslip.contract_id
             payslip_id = payslip.id
+            state = payslip.state
 
             if payslip.employee_id:
                 for emp_id in payslip.employee_id:
@@ -42,16 +44,18 @@ class hr_payslip_extend(models.Model):
         for attendance in attendances:
             worked_hours = worked_hours + attendance['worked_hours']
 
-        cr.execute("delete from hr_payslip_worked_days where code = 'actual_work'")
-        worked_days.create(cr, uid, {
-            'code': 'actual_work',
-            'contract_id': contract_id,
-            'payslip_id': payslip_id,
-            'number_of_days':  worked_hours / 24,
-            'number_of_hours': worked_hours,
-            'name': 'name',
-            'sequence': 10,
-            }, context=context)
+
+        if state != 'done':
+            cr.execute("delete from hr_payslip_worked_days where code = 'actual_work'")
+            worked_days.create(cr, uid, {
+                'code': 'actual_work',
+                'contract_id': contract_id,
+                'payslip_id': payslip_id,
+                'number_of_days':  worked_hours / 24,
+                'number_of_hours': worked_hours,
+                'name': 'name',
+                'sequence': 10,
+                }, context=context)
 
         return True
 
