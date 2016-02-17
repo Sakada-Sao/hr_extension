@@ -13,14 +13,50 @@ _logging = logging.getLogger(__name__)
 #     history = fields.Char(string="History", required=False, )
 #     work_date = fields.Date(string="Working Starting Date", required=False, )
 
+class hr_payslip_extend(models.Model):
+    _name = 'hr.payslip'
+    _inherit = 'hr.payslip'
+
+    # hr_payslip_worked_days
+    def get_work_day(self, cr, uid, ids, context=None):
+        emp_id = ''
+        worked_hours = 0.0
+        worked_days = self.pool.get('hr.payslip.worked_days')
+        contract_id = ''
+        payslip_id = ''
+
+        for payslip in self.browse(cr, uid, ids, context=context):
+            contract_id = payslip.contract_id
+            payslip_id = payslip.id
+
+            if payslip.employee_id:
+                for emp_id in payslip.employee_id:
+                    emp_id = emp_id.id
+            if payslip.contract_id:
+                for contract in payslip.contract_id:
+                    contract_id = contract.id
+
+        cr.execute('select * from hr_attendance where employee_id=%s and name>=%s and name <= %s and action=%s', (emp_id, payslip.date_from, payslip.date_to, 'sign_out'))
+
+        attendances = cr.dictfetchall()
+        for attendance in attendances:
+            worked_hours = worked_hours + attendance['worked_hours']
+
+        worked_days.create(cr, uid, {
+            'code': 'actual_work',
+            'contract_id': contract_id,
+            'payslip_id': payslip_id,
+            'number_of_days':  worked_hours / 24,
+            'number_of_hours': worked_hours,
+            'name': 'name',
+            'sequence': 10,
+            }, context=context)
+
+        return True
 
 class hr_contract_extension(models.Model):
     _name = 'hr.contract'
     _inherit = 'hr.contract'
-
-    def test(self):
-        print("the Fu*********")
-        return True
 
     @api.depends('spouse', 'minor_child')
     def _cal_child_allowance(self):
