@@ -63,6 +63,7 @@ class hr_contract_extension(models.Model):
     _name = 'hr.contract'
     _inherit = 'hr.contract'
 
+    @api.one
     @api.depends('spouse', 'minor_child')
     def _cal_child_allowance(self):
         # _logging.warn("----------------------------------------------> " + str(self.wage))
@@ -70,12 +71,14 @@ class hr_contract_extension(models.Model):
         for record in self:
             record.calculate_child_allowance = result
 
+    @api.one
     @api.depends('wage')
     def _cal_basic_dollar(self):
         result = self.wage
         for record in self:
             record.calculate_basic_dollar = result
 
+    @api.one
     @api.depends('wage')
     def _cal_basic_riel(self):
 
@@ -83,6 +86,7 @@ class hr_contract_extension(models.Model):
         for record in self:
             record.calculate_basic_riel = result
 
+    @api.one
     @api.depends('calculate_basic_riel', 'calculate_child_allowance')
     def _cal_salary_tax(self):
 
@@ -90,6 +94,7 @@ class hr_contract_extension(models.Model):
         for record in self:
             record.calculate_salary_tax = result
 
+    @api.one
     @api.depends('calculate_basic_riel', 'calculate_child_allowance')
     def _cal_tax_in_riel(self):
 
@@ -109,6 +114,7 @@ class hr_contract_extension(models.Model):
         for record in self:
             record.calculate_tax_salary_in_riel = calculate
 
+    @api.one
     @api.depends('calculate_tax_salary_in_riel')
     def _cal_tax_in_dollar(self):
 
@@ -116,6 +122,7 @@ class hr_contract_extension(models.Model):
         for record in self:
             record.calculate_tax_salary_in_dollar = result
 
+    @api.one
     @api.depends('calculate_tax_salary_in_dollar', 'calculate_basic_dollar')
     def _cal_paid_amount(self):
 
